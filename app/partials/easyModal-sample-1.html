@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+    <script src="../js/angular-1.4.8.js"></script>
+    <script src="../js/controllers.js"></script>
+    <script src="../js/easyModal.js"></script>
+    <link href="../css/bootstrap-3.3.6.css" rel="stylesheet">
+</head>
+<body ng-app = "easyModalApp" class="container">
+
+<div ng-controller="easyAlertController">
+    <p><h3>Easy Alert Examples:</h3></p>
+    <button class="btn btn-info" ng-click="showModal1()" type="button">Simple Alert</button>
+    <button class="btn btn-info" ng-click="showModal2()" type="button">New Button Label</button>
+    <button class="btn btn-info" ng-click="showModal3()" type="button">Set Fade Time</button>
+    <button class="btn btn-info" ng-click="showModal4()" type="button">New Button label & Set Fade Time</button>
+</div>
+<p></p>
+<div ng-controller="easyConfirmController">
+    <p><h3>Easy Confirm Examples:</h3></p>
+    <button class="btn btn-success" ng-click="showModal1()" type="button">Simple Confirm</button>
+    <button class="btn btn-success" ng-click="showModal2()" type="button">New Button Labels</button>
+    <h4 class="bg-info text-primary">{{data}}</h4>
+</div>
+<p></p>
+<div ng-controller="easyModalController">
+    <p><h3>Easy Modal Examples:</h3></p>
+    <button class="btn btn-default" ng-click="showModal1()" type="button">Simple String Template</button>
+    <button class="btn btn-default" ng-click="showModal2()" type="button">External Template</button>
+    <button class="btn btn-default" ng-click="showModal3()" type="button">Callback Function</button>
+    <button class="btn btn-default" ng-click="showModal4()" type="button">Extern Controller</button>
+    <h4 class="bg-info text-primary">{{data}}</h4>
+</div>
+</body>
+</html>
