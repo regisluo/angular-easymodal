@@ -1,9 +1,3 @@
-/**
- * AngularEasyModal
- * @author springquay at gmail.com
- * @license MIT
- * @version 1.0.0
- */
 angular.module('easyModalService', []).factory('emodal', ["$document", "$compile", "$rootScope", "$controller", "$timeout",
   function ($document, $compile, $rootScope, $controller, $timeout) {
     var factory = {};
