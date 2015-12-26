@@ -54,7 +54,7 @@
      * emodal.modal(templateURL,{}) {function}
      * 
      * @param templateURL:{string}. optional. External HTML template URL.
-     * @param {}:{object}.required. Please refer to easyModal.js for details.
+     * @param {}:{object}.required. Please refer to easymodal.js for details.
      */
     easyModalApp.controller("easyModalController",['$scope','emodal',function ($scope, emodal) {
         var successCallbackFun = function (arg) {
