@@ -33,7 +33,6 @@ angular.module('easyModalService', []).factory('emodal', ["$document", "$compile
     var body = $document.find('body');
 
     factory.modal = function (templateUrl/*optional*/, options, passedInLocals) {
-
             if(angular.isObject(templateUrl)){
                 passedInLocals = options;
                 options = templateUrl;
@@ -58,16 +57,15 @@ angular.module('easyModalService', []).factory('emodal', ["$document", "$compile
             var footerTemplate = '<div class="modal-footer">' + (options.footerTemplate || defaultFooter) + '</div>';
             var modalBody = (function(){
                 if(options.template){
-                    if(angular.isString(options.template)){// Simple string template
+                    if(angular.isString(options.template)){
                         return '<div class="modal-body">' + options.template + '</div>';
-                    } else {// jQuery/JQlite wrapped object
+                    } else {
                         return '<div class="modal-body">' + options.template.html() + '</div>';
                     }
-                } else {// Template url
+                } else {
                     return '<div class="modal-body" ng-include="\'' + options.templateUrl + '\'"></div>'
                 }
             })();
-
             var modalEl = angular.element(
                     '<div class="' + options.modalClass + ' fade"' + idAttr + ' style="display: block;">' +
                     '  <div class="modal-dialog">' +
@@ -81,7 +79,6 @@ angular.module('easyModalService', []).factory('emodal', ["$document", "$compile
                     '    </div>' +
                     '  </div>' +
                     '</div>');
-
             for(key in options.css) {
                 modalEl.css(key, options.css[key]);
             }
@@ -99,7 +96,6 @@ angular.module('easyModalService', []).factory('emodal', ["$document", "$compile
                     scope.$modalCancel();
                 }
             };
-
             var closeFun = function () {
                 body.unbind('keydown', handleEscPressed);
                 modalEl.remove();
@@ -107,9 +103,7 @@ angular.module('easyModalService', []).factory('emodal', ["$document", "$compile
                     backdropEl.remove();
                 }
             };
-
             body.bind('keydown', handleEscPressed);
-
             var ctrl, locals,
             scope = options.scope || $rootScope.$new();
             scope.$title = options.title;
@@ -145,7 +139,6 @@ angular.module('easyModalService', []).factory('emodal', ["$document", "$compile
             $compile(backdropEl)(scope);
             body.append(modalEl);
             if (options.backdrop) body.append(backdropEl);
-
             $timeout(function () {
                 modalEl.addClass('in');
             }, 200);
