@@ -47,7 +47,7 @@ $scope.showModal3 = function(){
 You will get the following modal:
 ![example page](screenshots/modal-with-callback.png)
            
-## [Live Usage Examples](http://jsfiddle.net/ttf177/2y7q9nnm/17/)
+## [Live Usage Examples](http://jsfiddle.net/ttf177/2y7q9nnm/17/) 
 
 ## [Documentation and samples](http://springquay.blogspot.com/2015/12/blog-post.html)
 

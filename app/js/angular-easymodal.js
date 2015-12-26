@@ -2,23 +2,23 @@ angular.module('easyModalService', []).factory('emodal', ["$document", "$compile
   function ($document, $compile, $rootScope, $controller, $timeout) {
     var factory = {};
     var defaults = {
-      id: null,
-      template: null,//simple String html template
-      templateUrl: null,//external html URL
-      title: 'My Title',//title shown on top of the modal
-      backdrop: true,
-      success: {label: 'OK', fn: null,show:true},
-      cancel: {label: 'Cancel', fn: null,show:false},
-      controller: null,//external controller generally provides data to the modal
-      backdropClass: "modal-backdrop",
-      backdropCancel: true,
-      footerTemplate: null,
-      modalClass: "modal",
-      successCallback:null,//callback function after press OK
-      cancelCallback:null,//callback function after press Cancel
-      successArgs:null,//successCallback function parameters
-      cancelArgs:null,//cancelCallback function parameters
-      fadetime:null,//milliseconds that modal vanish automatically
+        id: null, // modal id, used as an id property in an HTML tag
+        template: null,//simple String html template
+        templateUrl: null,//external html URL
+        title: 'My Title',//title shown on top of the modal
+        backdrop: true,//whether using backdrop
+        success: {label: 'OK', fn: null,show:true},//success button: label, function and display
+        cancel: {label: 'Cancel', fn: null,show:false},//cancel button: label, function and display
+        controller: null,//external controller generally provides data to the modal
+        backdropClass: "modal-backdrop",//backdrop class
+        backdropCancel: true,// whether modal vanish by clicking backdrop
+        footerTemplate: null,// footerTemplate replacing the default footer
+        modalClass: "modal",//the main modal css class
+        successCallback:null,//callback function after press OK
+        cancelCallback:null,//callback function after press Cancel
+        successArgs:null,//successCallback function parameters
+        cancelArgs:null,//cancelCallback function parameters
+        fadetime:null,//milliseconds that modal vanish automatically
       css: {
         top: '30%',
         margin: '0 auto'
