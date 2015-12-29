@@ -1,4 +1,4 @@
-# AngularJS-EasyModal-alert-confirm
+# Angular-EasyModal-alert-confirm
 
 This easyModal can be used in AngularJS-base(with Bootstrap) web application, which is an alternative of JS alert and 
 confirm dialog with enhanced functionality(html template,css,callback,external controller), more flexible, better user experience.
