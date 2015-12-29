@@ -3,6 +3,9 @@
 This easyModal can be used in AngularJS-base(with Bootstrap) web application, which is an alternative of JS alert and 
 confirm dialog with enhanced functionality(html template,css,callback,external controller), more flexible, better user experience.
 
+##Dependencies
+Requires AngularJS v1.4.0+ and Bootstrap's CSS.
+
 ## Overview
 ![example page](screenshots/all.png)
 
