@@ -34,15 +34,15 @@ You will get the following modal:
 
 ### Modal Example      
 ```
-var successCallbackFun = function (arg) {
-            $scope.data = '[success callback] Parameter: '+arg.id;
+var okCallbackFun = function (arg) {
+            $scope.data = '[ok callback] Parameter: '+arg.id;
         };
 var cancelCallbackFun = function (arg) {
             $scope.data = '[cancel callback] Parameter: '+arg.info;
         };
 $scope.showModal3 = function(){
             emodal.modal({template:'Messages go here!',title:'Callback Function',
-                successCallback:successCallbackFun,successArgs:{id:1},
+                okCallback:okCallbackFun,okArgs:{id:1},
                 cancelCallback:cancelCallbackFun,cancelArgs:{info:'i.e. Help text'}
             });
         };     

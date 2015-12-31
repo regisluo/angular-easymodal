@@ -1,87 +1,164 @@
-angular.module('easyModalService', []).factory('emodal', ["$document", "$compile", "$rootScope", "$controller", "$timeout",
-  function ($document, $compile, $rootScope, $controller, $timeout) {
-    var factory = {};
-    var defaults = {
-        id: null, // modal id, used as an id property in an HTML tag
-        template: null,//simple String html template
-        templateUrl: null,//external html URL
-        title: 'My Title',//title shown on top of the modal
-        backdrop: true,//whether using backdrop
-        success: {label: 'OK', fn: null,show:true},//success button: label, function and display
-        cancel: {label: 'Cancel', fn: null,show:false},//cancel button: label, function and display
-        controller: null,//external controller generally provides data to the modal
-        backdropClass: "modal-backdrop",//backdrop class
-        backdropCancel: true,// whether modal vanish by clicking backdrop
-        footerTemplate: null,// footerTemplate replacing the default footer
-        modalClass: "modal",//the main modal css class
-        successCallback:null,//callback function after press OK
-        cancelCallback:null,//callback function after press Cancel
-        successArgs:null,//successCallback function parameters
-        cancelArgs:null,//cancelCallback function parameters
-        fadetime:null,//milliseconds that modal vanish automatically
-      css: {
-        top: '30%',
-        margin: '0 auto'
-      }
-    };
-    var body = $document.find('body');
-
-    factory.modal = function (templateUrl/*optional*/, options, passedInLocals) {
-            if(angular.isObject(templateUrl)){
-                passedInLocals = options;
-                options = templateUrl;
-            } else {
-                options.templateUrl = templateUrl;
+angular.module('emodalService', []).factory('emodal', ["$document", "$compile", "$rootScope", "$controller", "$timeout",
+    function ($document, $compile, $rootScope, $controller, $timeout) {
+        var factory = {};
+        var body = $document.find('body');
+        var defaults = {
+            id: null, // modal id, used as the id attribute in the HTML tag
+            title:null,//title shown as the modal header
+            template: null,//simple String html template
+            templateClass:null,//css class for simple String html template
+            templateUrl: null,//external html file URL
+            footerTemplate: null,// footerTemplate replacing the default footer
+            backdrop: true,//whether backdrop is enabled
+            backdropClass: "modal-backdrop",//backdrop default css class
+            backdropCancel: true,// whether modal vanish by clicking backdrop
+            okLabel:'OK',//label of ok button
+            okClass:'btn btn-primary',//css class of ok button
+            okShow:true,//if ok button shown on the modal
+            okCallback:null,//callback function if ok is clicked
+            okCallbackObj:null,//"this" object inside okCallback function
+            okArgs:null,//okCallback function passed in arguments
+            cancelLabel:'Cancel',//label of cancel button
+            cancelClass:'btn',//css class of cancel button
+            cancelShow:false,//if cancel button shown on the modal
+            cancelCallback:null,//callback function if cancel is clicked
+            cancelCallbackObj:null,//"this" object inside cancelCallback function
+            cancelArgs:null,//cancelCallback function passed in arguments
+            fadein:null,//millionseconds that modal vanish automatically
+            modalClass: "modal",//the main modal css class
+            controller: null,//external controller generally provides data to the modal
+            css: {
+                top: '30%',
+                margin: '0 auto'
             }
+        };
 
-            options = angular.extend({}, defaults, options); //options defined in constructor
+        factory.alert =  function () {
+            if(arguments[0] instanceof Object){
+                this.modal(arguments[0],'alert');
+            }else{
+                var options = {};
+                options.template = arguments[0];
+                if(angular.isString(arguments[1])){
+                    options.okLabel = arguments[1];
+                }else if(angular.isNumber(arguments[1])){
+                    options.fadein = arguments[1];
+                };
+                if(angular.isNumber(arguments[2])){
+                    options.fadein = arguments[2];
+                };
+                this.modal(options,'alert');
+            }
+        };
 
-            var key;
-            var successCallbackFun = options.successCallback;
-            var cancelCallbackFun = options.cancelCallback;
-            var successArgs = options.successArgs;
-            var cancelArgs = options.cancelArgs;
-            var fadetime = options.fadetime;
+        factory.confirm = function () {
+            if(arguments[0] instanceof Object){
+                this.modal(arguments[0],'confirm');
+            }else{
+                var options = {};
+                options.template = arguments[0];
+                options.okCallback = arguments[1];
+                options.cancelCallback = arguments[2];
+                options.okCallbackObj = arguments[3];
+                options.cancelCallbackObj = arguments[4];
+                options.cancelShow = true;
+                this.modal(options,'confirm');
+            }
+        };
+        factory.modal = function (templateUrl,options, passedInLocals) {
+            var isAlert = false;
+            var isConfirm = false;
+            if(arguments.length>0){
+                if(angular.isObject(templateUrl)){
+                    passedInLocals = options;
+                    options = templateUrl;
+                    if(passedInLocals == 'alert'){
+                        isAlert = true;
+                    }
+                    if(passedInLocals == 'confirm'){
+                        isConfirm = true;
+                    }
+                } else {
+                    options = options == null?{}:options;
+                    options.templateUrl = templateUrl;
+                }
+                options = angular.extend({}, defaults, options);
+            }else{
+                options = defaults;
+            }
             var idAttr = options.id ? ' id="' + options.id + '" ' : '';
-
-            var defaultFooter = '<button class="btn btn-primary" ng-click="$modalSuccess()">{{$modalSuccessLabel}}</button>';
-            if(options.cancel.show || cancelCallbackFun){
-                defaultFooter = defaultFooter + '<button class="btn" ng-click="$modalCancel()">{{$modalCancelLabel}}</button>'
+            options.okClass = options.okClass==null?'btn btn-primary':options.okClass;
+            var defaultFooter = '';
+            if(options.okShow || options.okCallback){
+                defaultFooter += '<button class="'+options.okClass+'" ng-click="$modalOK()">{{$modalOKLabel}}</button>';
+            }
+            if(options.cancelShow || options.cancelCallback){
+                defaultFooter += '<button class="'+options.cancelClass+'" ng-click="$modalCancel()">{{$modalCancelLabel}}</button>'
             }
             var footerTemplate = '<div class="modal-footer">' + (options.footerTemplate || defaultFooter) + '</div>';
+            if(isAlert){
+                options.templateClass = options.templateClass==null?'alert alert-info':options.templateClass;
+            }
+            if(isConfirm){
+                options.templateClass = options.templateClass==null?'alert alert-danger':options.templateClass;
+            }
             var modalBody = (function(){
                 if(options.template){
                     if(angular.isString(options.template)){
-                        return '<div class="modal-body">' + options.template + '</div>';
+                        return '<div class="modal-body '+options.templateClass+'">' + options.template + '</div>';
                     } else {
                         return '<div class="modal-body">' + options.template.html() + '</div>';
                     }
-                } else {
+                } else if(options.templateUrl){
                     return '<div class="modal-body" ng-include="\'' + options.templateUrl + '\'"></div>'
+                }else{
+                    return '<div class="modal-body"></div>';
                 }
             })();
-            var modalEl = angular.element(
-                    '<div class="' + options.modalClass + ' fade"' + idAttr + ' style="display: block;">' +
-                    '  <div class="modal-dialog">' +
-                    '    <div class="modal-content">' +
+            var modalELString = '<div class="' + options.modalClass + ' fade"' + idAttr + ' style="display: block;">';
+            if(isAlert || isConfirm){
+                modalELString +=
+                    '  <div class="modal-dialog modal-sm">'+
+                    '    <div class="modal-content">';
+            }else{
+                modalELString +=
+                    '  <div class="modal-dialog">'+
+                    '    <div class="modal-content">';
+            }
+            if(options.title){
+                modalELString +=
                     '      <div class="modal-header">' +
                     '        <button type="button" class="close" ng-click="$modalCancel()">&times;</button>' +
-                    '        <h2>{{$title}}</h2>' +
-                    '      </div>' +
-                            modalBody +
-                            footerTemplate +
-                    '    </div>' +
-                    '  </div>' +
-                    '</div>');
+                    '        <h3>{{$title}}</h3>' +
+                    '      </div>';
+            }else{
+                if(!isAlert && !isConfirm){
+                    modalELString +=
+                        '      <div class="modal-header">' +
+                        '        <button type="button" class="close" ng-click="$modalCancel()">&times;</button>' +
+                        '      </div>';
+                }else{
+                    modalELString +=
+                        '      <div class="modal-header"></div>';
+                }
+            }
+            modalELString +=
+                modalBody +
+                footerTemplate +
+                '    </div>' +
+                '  </div>' +
+                '</div>';
+
+            var modalEl = angular.element(modalELString);
             for(key in options.css) {
                 modalEl.css(key, options.css[key]);
             }
-            var divHTML = "<div ";
+            var backDropHtml = "<div ";
             if(options.backdropCancel){
-                divHTML+='ng-click="$modalCancel()"';
+                backDropHtml+='ng-click="$modalCancel()"';
             }
-            divHTML+="/>";
-            var backdropEl = angular.element(divHTML);
+            backDropHtml+=">";
+            var backdropEl = angular.element(backDropHtml);
             backdropEl.addClass(options.backdropClass);
             backdropEl.addClass('fade in');
 
@@ -99,29 +176,24 @@ angular.module('easyModalService', []).factory('emodal', ["$document", "$compile
             };
             body.bind('keydown', handleEscPressed);
             var ctrl, locals,
-            scope = options.scope || $rootScope.$new();
+                scope = options.scope || $rootScope.$new();
             scope.$title = options.title;
-            scope.$modalClose = closeFun;
 
+            scope.$modalOK = function () {
+                if(options.okCallback){
+                    options.okCallback.call(options.okCallbackObj,options.okArgs);
+                }
+                closeFun();
+            };
             scope.$modalCancel = function () {
-                var callFun = options.cancel.fn || closeFun;
-                callFun.call(this);
-                if(cancelCallbackFun){
-                    cancelCallbackFun.call(null,cancelArgs);
+                if(options.cancelCallback){
+                    options.cancelCallback.call(options.cancelCallbackObj,options.cancelArgs);
                 }
-                scope.$modalClose();
+                closeFun();
             };
 
-            scope.$modalSuccess = function () {
-                var callFun = options.success.fn || closeFun;
-                callFun.call(this);
-                if(successCallbackFun){
-                    successCallbackFun.call(null,successArgs);
-                }
-                scope.$modalClose();
-            };
-            scope.$modalSuccessLabel = options.success.label;
-            scope.$modalCancelLabel = options.cancel.label;
+            scope.$modalOKLabel = options.okLabel;
+            scope.$modalCancelLabel = options.cancelLabel;
 
             if (options.controller) {
                 locals = angular.extend({$scope: scope}, passedInLocals);
@@ -132,144 +204,14 @@ angular.module('easyModalService', []).factory('emodal', ["$document", "$compile
             $compile(modalEl)(scope);
             $compile(backdropEl)(scope);
             body.append(modalEl);
+
             if (options.backdrop) body.append(backdropEl);
+            if(options.fadein){
+                $timeout(function () {closeFun()},options.fadein);
+            }
             $timeout(function () {
                 modalEl.addClass('in');
             }, 200);
-    };
-      /**
-       * @description simple alert .
-       * emodal.alert(arg1,agr2,arg3) {function}
-       * @param arg1:{string}.required. The message that will be shown in the modal.
-       * @param arg2:{string}.optional.The customized button label.Default is "OK".
-       *         OR
-       *        {number}.optional. MillionSeconds that the modal vanish.
-       * @param arg3:{number}.If arg2 is provided,arg3 is {number}: MillionSeconds that the modal vanish.
-       */
-    factory.alert =  function () {
-        var modalBody = '<div class="modal-body"><div class="alert alert-info">' + arguments[0] + '</div></div>';
-        var footerTemplate = '<div class="modal-footer"><button class="btn btn-primary" ng-click="$modalSuccess()">{{$modalSuccessLabel}}</button></div>';
-        var modalEl = angular.element(
-            '<div class="modal modal-body" style="display: block;">' +
-            '<div class="modal-dialog modal-sm">' +
-            '<div class="modal-content">' +
-            modalBody +
-            footerTemplate +
-            '</div>' +
-            '</div>' +
-            '</div>');
-
-        var label=null;
-        var scope = arguments[0].scope || $rootScope.$new();
-        var closeFun = function () {
-            body.unbind('keydown', handleEscPressed);
-            modalEl.remove();
         };
-        scope.$modalClose = closeFun;
-
-        if(angular.isString(arguments[1])){
-            label = arguments[1];
-        }else if(angular.isNumber(arguments[1])){
-            $timeout(function () {scope.$modalClose()},arguments[1]);
-        };
-        if(angular.isNumber(arguments[2])){
-            $timeout(function () {scope.$modalClose()},arguments[2]);
-        };
-        var handleEscPressed = function (event) {
-            if (event.keyCode === 27) {
-                scope.$modalClose();
-            }
-        };
-
-        body.bind('keydown', handleEscPressed);
-        scope.$modalSuccess = function () {
-            scope.$modalClose();
-        };
-        scope.$modalSuccessLabel = label==null?"OK":label;
-        $compile(modalEl)(scope);
-        body.append(modalEl);
-    };
-      /**
-       * @description simple confirm
-       * emodal.confirm(arg1,agr2,arg3) {function}
-       * OR
-       * emodal.confirm(arg1,agr2,arg3,arg4,arg5) {function}
-       *
-       * @param arg1:{string}.required. The message that will be shown in the modal.
-       * @param arg2:{function}.required.Callback function after "OK" is pressed.
-       * @param arg3:{function}.optional.Callback function after "Cancel" is pressed.
-       * OR
-       * @param arg1:{string}.required. The message that will be shown in the modal.
-       * @param arg2:{string}.required. The customized button label.Default is "OK".
-       * @param arg3:{string}.required. The customized button label.Default is "Cancel".
-       * @param arg4:{function}.required.Callback function after "OK" is pressed.
-       * @param arg5:{function}.optional.Callback function after "Cancel" is pressed.
-       */
-    factory.confirm = function () {
-        var modalBody = '<div class="modal-body"><div class="alert alert-info">' + (angular.isString(arguments[0])?arguments[0]:"") + '</div></div>';
-        var footerTemplate = '<div class="modal-footer"><button class="btn btn-primary" ng-click="$modalSuccess()">{{$modalSuccessLabel}}</button>';
-        footerTemplate = footerTemplate + '<button class="btn btn-primary" ng-click="$modalCancel()">{{$modalCancelLabel}}</button></div>';
-        var modalEl = angular.element(
-            '<div class="modal modal-body" style="display: block;">' +
-            '<div class="modal-dialog modal-sm">' +
-            '<div class="modal-content">' +
-            modalBody +
-            footerTemplate +
-            '</div>' +
-            '</div>' +
-            '</div>');
-
-        var scope = arguments[0].scope || $rootScope.$new();
-        var closeFun = function () {
-            body.unbind('keydown', handleEscPressed);
-            modalEl.remove();
-        };
-        scope.$modalClose = closeFun;
-        scope.$modalSuccessLabel = 'OK';
-        scope.$modalCancelLabel = 'Cancel';
-        switch(arguments.length){
-            case 2:
-                scope.$successCallback = angular.isFunction(arguments[1])?arguments[1]:null;
-                break;
-            case 3:
-                scope.$successCallback = angular.isFunction(arguments[1])?arguments[1]:null;
-                scope.$cancelCallback = angular.isFunction(arguments[2])?arguments[2]:null;
-                break;
-            case 4:
-                scope.$modalSuccessLabel = angular.isString(arguments[1])?arguments[1]:'OK';
-                scope.$modalCancelLabel = angular.isString(arguments[2])?arguments[2]:'Cancel';
-                scope.$successCallback = angular.isFunction(arguments[3])?arguments[3]:null;
-                break;
-            case 5:
-                scope.$modalSuccessLabel = angular.isString(arguments[1])?arguments[1]:'OK';
-                scope.$modalCancelLabel = angular.isString(arguments[2])?arguments[2]:'Cancel';
-                scope.$successCallback = angular.isFunction(arguments[3])?arguments[3]:null;
-                scope.$cancelCallback = angular.isFunction(arguments[4])?arguments[4]:null;
-                break;
-        }
-      var handleEscPressed = function (event) {
-            if (event.keyCode === 27) {
-                scope.$modalClose();
-            }
-        };
-
-        body.bind('keydown', handleEscPressed);
-
-        scope.$modalSuccess = function () {
-            if(scope.$successCallback != undefined){
-                scope.$successCallback.call(null,null);
-            };
-            scope.$modalClose();
-        };
-        scope.$modalCancel = function () {
-            if(scope.$cancelCallback != undefined){
-                scope.$cancelCallback.call(null,null);
-            };
-            scope.$modalClose();
-        };
-
-        $compile(modalEl)(scope);
-        body.append(modalEl);
-    };
-    return factory;
-  }]);
+        return factory;
+    }]);

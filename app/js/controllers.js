@@ -1,4 +1,4 @@
-    var easyModalApp = angular.module("easyModalApp", ['easyModalService']);
+    var easyModalApp = angular.module("easyModalApp", ['emodalService']);
     /**
      * @description simple alert modal.
      * emodal.alert(arg1,agr2,arg3) {function}
@@ -26,10 +26,10 @@
      * @param arg3:{function}.optional.Callback function after "Cancel" is pressed.
      * OR
      * @param arg1:{string}.required. The message that will be shown in the modal.
-     * @param arg2:{string}.required. The customized button label.Default is "OK".
-     * @param arg3:{string}.required. The customized button label.Default is "Cancel".
-     * @param arg4:{function}.required.Callback function after "OK" is pressed.
-     * @param arg5:{function}.optional.Callback function after "Cancel" is pressed.
+     * @param arg2:{function}.optional.Callback function after "OK" is pressed.
+     * @param arg3:{function}.optional.Callback function after "Cancel" is pressed.
+     * @param arg4:{object}.optional."this" object inside okCallback function.
+     * @param arg5:{object}.optional."this" object inside cancelCallback function.
      */
     easyModalApp.controller("easyConfirmController",['$scope','emodal', function ($scope, emodal) {
         $scope.showModal1 = function(){
@@ -42,12 +42,6 @@
                }
            );
         };
-        $scope.showModal2 = function(){
-            emodal.confirm("Are you sure to delete?<p></p>It is not recoverable!",
-                "New OK Label","New Cancel Label",
-                function(){console.log('deleted.')},
-                function(){console.log('canceled.')});
-        };
     }]);
     /**
      * @description create a basic modal
@@ -57,21 +51,21 @@
      * @param {}:{object}.required. Please refer to angular-easymodal.js for details.
      */
     easyModalApp.controller("easyModalController",['$scope','emodal',function ($scope, emodal) {
-        var successCallbackFun = function (arg) {
-            $scope.data = '[success callback] Parameter: '+arg.id;
+        var okCallbackFun = function (arg) {
+            $scope.data = '[ok callback] Parameter: '+arg.id;
         };
         var cancelCallbackFun = function (arg) {
             $scope.data = '[cancel callback] Parameter: '+arg.info;
         };
         $scope.showModal1 = function(){
-            emodal.modal({template:'Messages go here!',title:'',cancel:{label:'Cancel',show:true}});
+            emodal.modal({template:'Messages go here!',title:'',cancelLabel:'Cancel',cancelShow:true});
         };
         $scope.showModal2 = function(){
             emodal.modal("../partials/externalTemplate.html",{title:'External Template'});
         };
         $scope.showModal3 = function(){
             emodal.modal({template:'Messages go here!',title:'Callback Function',
-                successCallback:successCallbackFun,successArgs:{id:1},
+                okCallback:okCallbackFun,okArgs:{id:1},
                 cancelCallback:cancelCallbackFun,cancelArgs:{info:'i.e. Help text'}
             });
         };
