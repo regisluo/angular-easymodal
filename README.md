@@ -54,7 +54,7 @@ $scope.showModal = function(){
 You will get the following modal:
 ![example page](screenshots/modal-with-callback.png)
            
-## [Live Usage Examples](http://jsfiddle.net/ttf177/2y7q9nnm/17/) 
+## [Live Usage Examples](http://jsfiddle.net/ttf177/2y7q9nnm/18/) 
 
 ## [Documentation and samples](http://regisluo.github.io/angular-easymodal/)
 
