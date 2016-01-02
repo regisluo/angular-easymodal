@@ -13,7 +13,7 @@ Requires AngularJS v1.4.0+ and Bootstrap's CSS.
 ```
 emodal.alert("<strong>Title</strong> <p></p>Disappear in 2 seconds",2000);
 ```
-You will get the following modal:
+You will get the following modal:  
 ![example page](screenshots/alert-with-fadingtime.png)
 
 ### Confirm Example
@@ -29,7 +29,7 @@ emodal.confirm("Are you sure to delete?<p></p>It is not recoverable!",
                }
            );
 ```           
-You will get the following modal:
+You will get the following modal:  
 ![example page](screenshots/confirm.png)
 
 ### Modal Example      
@@ -51,7 +51,7 @@ $scope.showModal = function(){
             });
         };     
 ```        
-You will get the following modal:
+You will get the following modal:  
 ![example page](screenshots/modal-with-callback.png)
            
 ## [Live Usage Examples](http://jsfiddle.net/ttf177/2y7q9nnm/18/) 
