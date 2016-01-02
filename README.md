@@ -20,12 +20,12 @@ You will get the following modal:
 ```
 emodal.confirm("Are you sure to delete?<p></p>It is not recoverable!",
                function(){
-                   //do something if OK is pressed
-                   $scope.data='You have pressed OK!';
+                   //do something if OK is clicked
+                   $scope.data='You have clicked OK!';
                },
                function(){
-                   //do something if Cancel is pressed
-                   $scope.data='You have pressed Cancel!';
+                   //do something if Cancel is clicked
+                   $scope.data='You have clicked Cancel!';
                }
            );
 ```           
@@ -40,10 +40,14 @@ var okCallbackFun = function (arg) {
 var cancelCallbackFun = function (arg) {
             $scope.data = '[cancel callback] Parameter: '+arg.info;
         };
-$scope.showModal3 = function(){
-            emodal.modal({template:'Messages go here!',title:'Callback Function',
-                okCallback:okCallbackFun,okArgs:{id:1},
-                cancelCallback:cancelCallbackFun,cancelArgs:{info:'i.e. Help text'}
+$scope.showModal = function(){
+            emodal.modal({
+            template:'Messages go here!',
+            title:'Callback Function',
+            okCallback:okCallbackFun,
+            okArgs:{id:1},
+            cancelCallback:cancelCallbackFun,
+            cancelArgs:{info:'i.e. Help text'}
             });
         };     
 ```        
@@ -52,7 +56,7 @@ You will get the following modal:
            
 ## [Live Usage Examples](http://jsfiddle.net/ttf177/2y7q9nnm/17/) 
 
-## [Documentation and samples](http://springquay.blogspot.com/2015/12/blog-post.html)
+## [Documentation and samples](http://regisluo.github.io/angular-easymodal/)
 
 ## License
 
