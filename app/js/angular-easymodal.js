@@ -87,7 +87,6 @@ angular.module('emodalService', []).factory('emodal', ["$document", "$compile", 
                 options = defaults;
             }
             var idAttr = options.id ? ' id="' + options.id + '" ' : '';
-            options.okClass = options.okClass==null?'btn btn-primary':options.okClass;
             var defaultFooter = '';
             if(options.okShow || options.okCallback){
                 defaultFooter += '<button class="'+options.okClass+'" ng-click="$modalOK()">{{$modalOKLabel}}</button>';
