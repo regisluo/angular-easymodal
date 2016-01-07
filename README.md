@@ -1,7 +1,8 @@
 # Angular-EasyModal-alert-confirm
 
-This easyModal can be used in AngularJS-base(with Bootstrap) web application, which is an alternative of JS alert and 
-confirm dialog with enhanced functionality(html template,css,callback,external controller), more flexible, better user experience.
+This easyModal can be used in AngularJS-base web applications, which is an alternative of JS alert and  
+confirm dialog with enhanced functionality(html template,css,callback and passed in arguments,external controller),  
+more flexible, better user experience.
 
 ##Dependencies
 Requires AngularJS v1.4.0+ and Bootstrap's CSS.
@@ -11,50 +12,47 @@ Requires AngularJS v1.4.0+ and Bootstrap's CSS.
 
 ### Alert Example
 ```
-emodal.alert("<strong>Title</strong> <p></p>Disappear in 2 seconds",2000);
+    emodal.alert("Messages go here!");
 ```
 You will get the following modal:  
-![example page](screenshots/alert-with-fadingtime.png)
+![example page](screenshots/simplealert.png)
 
 ### Confirm Example
 ```
-emodal.confirm("Are you sure to delete?<p></p>It is not recoverable!",
+           emodal.confirm("Are you sure to delete?",
                function(){
-                   //do something if OK is clicked
                    $scope.data='You have clicked OK!';
                },
                function(){
-                   //do something if Cancel is clicked
                    $scope.data='You have clicked Cancel!';
                }
            );
+        };
 ```           
 You will get the following modal:  
-![example page](screenshots/confirm.png)
+![example page](screenshots/simpleconfirm.png)
 
 ### Modal Example      
 ```
-var okCallbackFun = function (arg) {
+        emodal.modal("../partials/externalTemplate.html",
+                {
+                title:'Callback Function',
+                okCallback:okCallbackFun,
+                okArgs:{id:1},
+                cancelCallback:cancelCallbackFun,
+                cancelArgs:{info:'some text'}
+               });
+        var okCallbackFun = function (arg) {
             $scope.data = '[ok callback] Parameter: '+arg.id;
         };
-var cancelCallbackFun = function (arg) {
+        var cancelCallbackFun = function (arg) {
             $scope.data = '[cancel callback] Parameter: '+arg.info;
-        };
-$scope.showModal = function(){
-            emodal.modal({
-            template:'Messages go here!',
-            title:'Callback Function',
-            okCallback:okCallbackFun,
-            okArgs:{id:1},
-            cancelCallback:cancelCallbackFun,
-            cancelArgs:{info:'i.e. Help text'}
-            });
-        };     
+        };                 
 ```        
 You will get the following modal:  
 ![example page](screenshots/modal-with-callback.png)
            
-## [Live Usage Examples](http://jsfiddle.net/ttf177/2y7q9nnm/18/) 
+## [Live Usage Examples](http://jsfiddle.net/ttf177/2y7q9nnm/23/) 
 
 ## [Documentation and samples](http://regisluo.github.io/angular-easymodal/)
 

@@ -1,3 +1,11 @@
+/**
+ * ------------------------------------------------------------
+ * An easy to use alternative of alert and confirm dialog with
+ * enhanced functionality for AngularJS-based applications.
+ * @version 1.1
+ * @author springquay at gmail.com
+ * -------------------------------------------------------------
+ */
 angular.module('emodalService', []).factory('emodal', ["$document", "$compile", "$rootScope", "$controller", "$timeout",
     function ($document, $compile, $rootScope, $controller, $timeout) {
         var factory = {};
@@ -27,43 +35,38 @@ angular.module('emodalService', []).factory('emodal', ["$document", "$compile", 
             fadein:null,//millionseconds that modal vanish automatically
             modalClass: "modal",//the main modal css class
             controller: null,//external controller generally provides data to the modal
+            buttons:null,//support more buttons other than default OK and Cancel: array: [{label:'',class:'',callback:null,args:{},callbackObj:null}]
             css: {
-                top: '30%',
+                top: '15%',
                 margin: '0 auto'
             }
         };
 
         factory.alert =  function () {
-            if(arguments[0] instanceof Object){
-                this.modal(arguments[0],'alert');
-            }else{
                 var options = {};
+                if(arguments[1] instanceof Object){
+                    options = arguments[1];
+                }
                 options.template = arguments[0];
-                if(angular.isString(arguments[1])){
-                    options.okLabel = arguments[1];
-                }else if(angular.isNumber(arguments[1])){
-                    options.fadein = arguments[1];
-                };
-                if(angular.isNumber(arguments[2])){
-                    options.fadein = arguments[2];
-                };
                 this.modal(options,'alert');
-            }
         };
 
         factory.confirm = function () {
-            if(arguments[0] instanceof Object){
-                this.modal(arguments[0],'confirm');
-            }else{
-                var options = {};
-                options.template = arguments[0];
-                options.okCallback = arguments[1];
-                options.cancelCallback = arguments[2];
-                options.okCallbackObj = arguments[3];
-                options.cancelCallbackObj = arguments[4];
-                options.cancelShow = true;
-                this.modal(options,'confirm');
+            var options = {};
+            if(arguments[3] instanceof Object){
+                options = arguments[3]
             }
+            if(arguments[2] != undefined){
+                if(arguments[2] instanceof Function){
+                    options.cancelCallback = arguments[2];
+                }else{
+                    options = arguments[2];
+                }
+            }
+            options.template = arguments[0];
+            options.okCallback = arguments[1];
+            options.cancelShow = true;
+            this.modal(options,'confirm');
         };
         factory.modal = function (templateUrl,options, passedInLocals) {
             var isAlert = false;
@@ -88,18 +91,25 @@ angular.module('emodalService', []).factory('emodal', ["$document", "$compile", 
             }
             var idAttr = options.id ? ' id="' + options.id + '" ' : '';
             var defaultFooter = '';
+
             if(options.okShow || options.okCallback){
                 defaultFooter += '<button class="'+options.okClass+'" ng-click="$modalOK()">{{$modalOKLabel}}</button>';
             }
             if(options.cancelShow || options.cancelCallback){
                 defaultFooter += '<button class="'+options.cancelClass+'" ng-click="$modalCancel()">{{$modalCancelLabel}}</button>'
             }
+            if(options.buttons){
+                for(var i=0;i<options.buttons.length;i++){
+                    var button = options.buttons[i];
+                    defaultFooter += '<button class="'+button.class+'" ng-click="$modalButton('+i+')">'+button.label+'</button>';
+                }
+            }
             var footerTemplate = '<div class="modal-footer">' + (options.footerTemplate || defaultFooter) + '</div>';
             if(isAlert){
-                options.templateClass = options.templateClass==null?'alert alert-info':options.templateClass;
+                options.templateClass = options.templateClass || 'alert alert-info';
             }
             if(isConfirm){
-                options.templateClass = options.templateClass==null?'alert alert-danger':options.templateClass;
+                options.templateClass = options.templateClass || 'alert alert-danger';
             }
             var modalBody = (function(){
                 if(options.template){
@@ -127,14 +137,14 @@ angular.module('emodalService', []).factory('emodal', ["$document", "$compile", 
             if(options.title){
                 modalELString +=
                     '      <div class="modal-header">' +
-                    '        <button type="button" class="close" ng-click="$modalCancel()">&times;</button>' +
+                    '        <button type="button" class="close" ng-click="$modalClose()">&times;</button>' +
                     '        <h3>{{$title}}</h3>' +
                     '      </div>';
             }else{
                 if(!isAlert && !isConfirm){
                     modalELString +=
                         '      <div class="modal-header">' +
-                        '        <button type="button" class="close" ng-click="$modalCancel()">&times;</button>' +
+                        '        <button type="button" class="close" ng-click="$modalClose()">&times;</button>' +
                         '      </div>';
                 }else{
                     modalELString +=
@@ -175,22 +185,30 @@ angular.module('emodalService', []).factory('emodal', ["$document", "$compile", 
             };
             body.bind('keydown', handleEscPressed);
             var ctrl, locals,
-                scope = options.scope || $rootScope.$new();
+            scope = options.scope || $rootScope.$new();
             scope.$title = options.title;
-
+            scope.$modalClose = closeFun;
+            
             scope.$modalOK = function () {
                 if(options.okCallback){
                     options.okCallback.call(options.okCallbackObj,options.okArgs);
                 }
-                closeFun();
+                scope.$modalClose();
             };
             scope.$modalCancel = function () {
                 if(options.cancelCallback){
                     options.cancelCallback.call(options.cancelCallbackObj,options.cancelArgs);
                 }
-                closeFun();
+                scope.$modalClose();
             };
 
+            scope.$modalButton = function(i){
+                var button = options.buttons[i];
+                if(button.callback){
+                    button.callback.call(button.callbackObj,button.args);
+                }
+                scope.$modalClose();
+            }
             scope.$modalOKLabel = options.okLabel;
             scope.$modalCancelLabel = options.cancelLabel;
 
@@ -206,7 +224,7 @@ angular.module('emodalService', []).factory('emodal', ["$document", "$compile", 
 
             if (options.backdrop) body.append(backdropEl);
             if(options.fadein){
-                $timeout(function () {closeFun()},options.fadein);
+                $timeout(function () {scope.$modalClose()},options.fadein);
             }
             $timeout(function () {
                 modalEl.addClass('in');
