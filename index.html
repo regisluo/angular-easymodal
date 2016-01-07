@@ -20,10 +20,11 @@
 
     <section class="main-content">
       <h1>
-<a id="angular-easymodal-alert-confirm" class="anchor" href="#angular-easymodal-alert-confirm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Angular-EasyModal-alert-confirm</h1>
+<a id="angular-emodal" class="anchor" href="#angular-emodal" aria-hidden="true"><span class="octicon octicon-link"></span></a>Angular emodal</h1>
 
 <p>This easyModal can be used in AngularJS-base(with Bootstrap) web application, which is an alternative of JS alert and 
-confirm dialog with enhanced functionality(html template,css,callback,external controller), more flexible, better user experience.</p>
+confirm dialog with enhanced functionality(html template,css,callback,external controller), more flexible, better user experience.<br>
+[Please refer to github for updates!]  </p>
 
 <h2>
 <a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h2>
@@ -33,18 +34,18 @@ confirm dialog with enhanced functionality(html template,css,callback,external c
 <h3>
 <a id="alert-example" class="anchor" href="#alert-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Alert Example</h3>
 
-<pre><code>emodal.alert("&lt;strong&gt;Title&lt;/strong&gt; &lt;p&gt;&lt;/p&gt;Disappear in 2 seconds",2000);
+<pre><code>         emodal.alert("Messages go here!");
 </code></pre>
 
 <h3>
 <a id="confirm-example" class="anchor" href="#confirm-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Confirm Example</h3>
 
-<pre><code>emodal.confirm("Are you sure to delete?",
+<pre><code>         emodal.confirm("Are you sure to delete?",
                function(){
-                   //do something if OK is pressed
+                   $scope.data='You have clicked OK!';
                },
                function(){
-                   //do something if Cancel is pressed
+                   $scope.data='You have clicked Cancel!';
                }
            );
 </code></pre>
@@ -52,26 +53,24 @@ confirm dialog with enhanced functionality(html template,css,callback,external c
 <h3>
 <a id="modal-example" class="anchor" href="#modal-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Modal Example</h3>
 
-<pre><code>var okCallbackFun = function (arg) {
-            $scope.data = '[ok callback] Parameter: '+arg.id;
-        };
-var cancelCallbackFun = function (arg) {
-            $scope.data = '[cancel callback] Parameter: '+arg.info;
-        };
-$scope.showModal = function(){
-            emodal.modal({
-                template:'Messages go here!',
+<pre><code>       emodal.modal("../partials/externalTemplate.html",
+                {
                 title:'Callback Function',
                 okCallback:okCallbackFun,
                 okArgs:{id:1},
                 cancelCallback:cancelCallbackFun,
-                cancelArgs:{info:'some msg'}
-            });
+                cancelArgs:{info:'some text'}
+               });
+        var okCallbackFun = function (arg) {
+            $scope.data = '[ok callback] Parameter: '+arg.id;
+        };
+        var cancelCallbackFun = function (arg) {
+            $scope.data = '[cancel callback] Parameter: '+arg.info;
         };     
 </code></pre>
 
 <h2>
-<a id="live-usage-examples" class="anchor" href="#live-usage-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://jsfiddle.net/ttf177/2y7q9nnm/17/">Live Usage Examples</a>
+<a id="click-here-for-live-online-examples" class="anchor" href="#click-here-for-live-online-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://jsfiddle.net/ttf177/2y7q9nnm/23/">Click here for Live Online Examples</a>
 </h2>
 
 <h2>
@@ -81,11 +80,9 @@ $scope.showModal = function(){
 <a id="1-alert" class="anchor" href="#1-alert" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. alert</h3>
 
 <p>This aims to provide the function like native JS alert, but with more customized properties.<br>
- There are maximum 3 arguments with four calling types:<br>
+ There are maximum 2 arguments with two calling types:<br>
  emodal.alert(string);<br>
- emodal.alert(string, string);<br>
- emodal.alert(string, number);<br>
- emodal.alert(string, string, number);  </p>
+ emodal.alert(string, object);  </p>
 
 <h4>
 <a id="11-one-argument" class="anchor" href="#11-one-argument" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.1 one argument</h4>    
@@ -98,83 +95,105 @@ $scope.showModal = function(){
 <h4>
 <a id="12-two-arguments" class="anchor" href="#12-two-arguments" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2 two arguments</h4>    
 
-<p>//string+string  </p>
-
-<pre><code>emodal.alert("Messages go here!","New Button Label");
+<pre><code>emodal.alert("&lt;strong&gt;Title&lt;/strong&gt;&lt;p&gt;&lt;/p&gt;Disappear in 2 seconds",
+             {okLabel:'New Button Label',fadein:2000}
+            );
 </code></pre>
 
-<p><img src="http://1.bp.blogspot.com/-Tc571pwKIn8/Vn1GLxpdz0I/AAAAAAAAABg/K3WA0v19iTU/s1600/new%2Bbutton%2Blabel.png"><br>
-OR<br>
-//string+number(millionseconds)   </p>
-
-<pre><code>emodal.alert("&lt;strong&gt;Title&lt;/strong&gt; &lt;p&gt;&lt;/p&gt;Disappear in 2 seconds",2000);
-</code></pre>
-
-<p><img src="http://1.bp.blogspot.com/-MY_3mFjJ-IU/Vn1GMBS2iZI/AAAAAAAAABk/jaVZ1on3rpM/s1600/set%2Bfade%2Btime.png"></p>
-
-<p>1.3 three arguments<br>
- //message + new label name + millionseconds that the modal vanish  </p>
-
-<pre><code>emodal.alert("&lt;strong&gt;Title&lt;/strong&gt;&lt;p&gt;&lt;/p&gt;Disappear in 2 seconds","New Button Label",2000);
-</code></pre>
-
-<p><img src="http://3.bp.blogspot.com/-P2aEdt-ZGeg/Vn1HW34fXmI/AAAAAAAAAB0/Xy1RYpMffXI/s1600/new%2Bbutton%2Blabel%2Band%2Bfade%2Btime.png">   </p>
+<p><img src="http://3.bp.blogspot.com/-P2aEdt-ZGeg/Vn1HW34fXmI/AAAAAAAAAB0/Xy1RYpMffXI/s1600/new%2Bbutton%2Blabel%2Band%2Bfade%2Btime.png">  </p>
 
 <h3>
 <a id="2-confirm" class="anchor" href="#2-confirm" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. confirm</h3>  
 
-<p>This aims to provide the function like traditional JS confirm, but with more customized properties.<br>
- There are totally 5 arguments with generally two calling types:  </p>
+<p>This aims to provide the function like traditional JS confirm, but with more customized properties.  </p>
 
-<pre><code> emodal.confirm(string /*required*/, function /*required*/, function /*optional*/);  
+<pre><code> emodal.confirm(string, function, function OR object);  
 </code></pre>
 
 <p>OR  </p>
 
-<pre><code> emodal.confirm(string /*required*/, function /*required*/, function /*optional*/, object /*optional*/, object /*optional*/);  
+<pre><code> emodal.confirm(string, function, function, object);  
 </code></pre>
 
 <h4>
-<a id="21-three-2-required--1-optional-arguments" class="anchor" href="#21-three-2-required--1-optional-arguments" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.1 three (2 required + 1 optional) arguments</h4>  
+<a id="21-three-arguments" class="anchor" href="#21-three-arguments" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.1 three arguments</h4>  
 
 <p>string: message shown in the modal<br>
  function: callback function if click OK<br>
- function:(optional) callback function if click Cancel  </p>
+ function:(optional) callback function if click Cancel<br>
+ OR
+ object: (optional) provide more arguments to the confirm modal  </p>
 
-<pre><code>emodal.confirm("Are you sure to delete?&lt;p&gt;&lt;/p&gt;It is not recoverable!",
-    function(){
-        // if OK is clicked
-    },
-    function(){
-         // if Cancel is clicked
-     }
-
-);
+<pre><code>           emodal.confirm("Are you sure to delete?&lt;p&gt;&lt;/p&gt;It is not recoverable!"
+               function(){
+                   // if click OK
+               },
+               function(){
+                   // if click Cancel
+               }
+           );
 </code></pre>
 
 <p><img src="http://3.bp.blogspot.com/-mr7e7srjZSk/Vn1JvFhT5cI/AAAAAAAAACA/jEfCUhHnjMM/s1600/simple%2Bconfirm.png"></p>
 
 <h4>
-<a id="-22-five-2-required--3-optional-arguments" class="anchor" href="#-22-five-2-required--3-optional-arguments" aria-hidden="true"><span class="octicon octicon-link"></span></a> 2.2 five (2 required + 3 optional) arguments</h4>  
+<a id="-22-four-arguments" class="anchor" href="#-22-four-arguments" aria-hidden="true"><span class="octicon octicon-link"></span></a> 2.2 four arguments</h4>  
 
 <p>string: message shown in the modal<br>
- function: callback function if press OK<br>
- function:(optional) callback function if press Cancel<br>
- object:(optional) "this" object inside okCallback function<br>
- object:(optional) "this" object inside cancelCallback function  </p>
+ function: callback function if click OK<br>
+ function: callback function if click Cancel<br>
+ object:(optional) provide more arguments to the confirm modal  </p>
+
+<pre><code>            emodal.confirm("Args passed into callback!",
+                function(arg){
+                    $scope.data='You have clicked OK! Arg is: '+arg.info;
+                },
+                function(arg){
+                    $scope.data='You have clicked Cancel! Arg is: '+arg.info;
+                },
+                {
+                    title:'Confirm dialog can also accept args!',
+                    okArgs:{info:true},
+                    cancelArgs:{info:false}
+                }
+            );
+</code></pre>
 
 <h3>
 <a id="3-modal" class="anchor" href="#3-modal" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. modal</h3>  
 
 <p>Modal aims to provide more functionality not as simple alert and confirm dialog.<br>
 Generally the argument passed in is an object with the following arguments:<br>
-<img src="http://3.bp.blogspot.com/-2mmpnDi7yHE/VoVZYHVH-MI/AAAAAAAAAC4/xnYu7Melb_g/s1600/para.png"><br>
+<img src="http://2.bp.blogspot.com/-BfInuzqhLZ4/Vo5WlpXEnqI/AAAAAAAAADM/X7pVxQQi5ys/s1600/args.png"><br>
 example:</p>
 
-<pre><code>emodal.modal("../partials/externalTemplate.html",{title:'External Template'});
+<pre><code>emodal.modal({
+      template:'There are two extra buttons!',
+      title:'Extra Buttons Demo',
+      okCallback:okCallbackFun,
+      okArgs:{id:1},
+      cancelCallback:cancelCallbackFun,
+      cancelArgs:{info:'some text'},
+      buttons:[
+              {label:'Extra-1',class:'btn btn-warning',callback:extraCallBackFun1,args:{info:'from extra button 1'}},
+              {label:'Extra-2',class:'btn btn-success',callback:extraCallBackFun2,args:{info:'from extra button 2'}}
+              ]
+            });
+     var okCallbackFun = function (arg) {
+         $scope.data = '[ok callback] Parameter: '+arg.id;
+     };
+     var cancelCallbackFun = function (arg) {
+         $scope.data = '[cancel callback] Parameter: '+arg.info;
+     };
+     var extraCallBackFun1 = function (arg) {
+         $scope.data = '[extra callback 1] Parameter: '+arg.info;
+     };
+     var extraCallBackFun2 = function (arg) {
+         $scope.data = '[extra callback 2] Parameter: '+arg.info;
+     };
 </code></pre>
 
-<p><img src="http://3.bp.blogspot.com/-DRfWXspnTec/Vn4lsVqgYHI/AAAAAAAAACc/Mh8mHJMgt2w/s400/msg%2Bfrom%2Bexternal%2Btemplate.png"></p>
+<p><img src="http://1.bp.blogspot.com/-k_531bAsClQ/Vo5YSVTY9gI/AAAAAAAAADY/ArPLYek67k8/s1600/extrabuttons.png"></p>
 
 <h2>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
